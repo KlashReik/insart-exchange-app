@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "http://localhost:3000/exchange",
+  baseURL: "http://localhost:3001/exchange",
 });
 
 const REQUEST_COUNTER_KEY = "apiRequestCounter";
