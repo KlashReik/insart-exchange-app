@@ -61,6 +61,7 @@ export const EditableInput: React.FC<EditableInputProps> = ({
 
   return (
     <FormControl
+      sx={{ width: "200px" }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
