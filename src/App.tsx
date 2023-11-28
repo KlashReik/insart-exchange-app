@@ -1,25 +1,74 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Box, Typography, useMediaQuery } from "@mui/material";
+import useSWR from "swr";
+import { fetchCurrencyRates } from "./api/axiosService";
+import { CurrencyTable, ExchangeContainer, Footer, Header } from "./components";
+import useCurrencyStore from "./store/store";
+import { Currency } from "./types/types";
 
 function App() {
+  const isTablet = useMediaQuery("(max-width:780px)");
+  const currency = useCurrencyStore((state) => state.currencyArray);
+
+  const setCurrency = useCurrencyStore((state) => state.setCurrencyArray);
+
+  const { error } = useSWR<Currency[], Error>(
+    "http://localhost:3000/exchange",
+    fetchCurrencyRates,
+    {
+      onSuccess: (fetchedData) => {
+        setCurrency(fetchedData);
+      },
+      shouldRetryOnError: false,
+    }
+  );
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Box
+      minHeight="100vh"
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      margin="0 auto"
+    >
+      <Header />
+      <Box textAlign="center" bgcolor="#F0F5FF" width="100%" height="400px">
+        <Typography variant="h2" mb="16px">
+          Currency Converter
+        </Typography>
+        <Typography variant="h6" mb="16px">
+          Need to make an international business payment? Take a look at our
+          live foreign exchange rates.
+        </Typography>
+      </Box>
+      <Box
+        width="100%"
+        display="flex"
+        gap="32px"
+        maxWidth="1200px"
+        position="absolute"
+        top="250px"
+        bgcolor="white"
+        border="1px solid lightgrey"
+        borderRadius="10px"
+        padding="10px 0"
+        alignItems={isTablet ? "center" : "start"}
+        flexDirection={isTablet ? "column" : "row"}
+      >
+        {error ? (
+          <Box width="100%" margin="0 auto">
+            <Typography variant="body1" color="error" textAlign="center">
+              Sorry! An error occurred. Please try again.
+            </Typography>
+          </Box>
+        ) : (
+          <>
+            <CurrencyTable data={currency as Currency[]} />
+            <ExchangeContainer />
+          </>
+        )}
+      </Box>
+      <Footer />
+    </Box>
   );
 }
 
