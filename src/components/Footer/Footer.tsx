@@ -1,7 +1,7 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 
 export const Footer: React.FC = () => (
-  <Box marginTop="auto" marginBottom="32px">
+  <Box marginTop="auto">
     <Container maxWidth="lg">
       <Grid container direction="column" alignItems="center">
         <Grid item xs={12}>
